@@ -60,13 +60,11 @@ public class TestCases {
 
         // Print the number of products found with rating less than or equal to 4 stars.
         if(!productsWithRating.isEmpty()){
-            System.out.println("The number of products with ratings " + ratingToSelect + " : " + productsWithRating.size()+ " testCase01");
-        }else{
-            System.out.println("No products found with the given ratings: "+ ratingToSelect);
+            wrappers.logStatus(
+                "The number of products with ratings " + ratingToSelect + " : " + productsWithRating.size(),
+                "testCase01");
         }
-        // wrappers.logStatus(
-        //         "The number of products with ratings " + ratingToSelect + " : " + productsWithRating.size(),
-        //         "testCase01");
+
 
         wrappers.logStatus("End TestCase", "testCase01");
 
@@ -92,22 +90,13 @@ public class TestCases {
         // Get products whoose discount is >17 % from the search result
         discountToSelect = "> 17";
         List<WebElement> productsWithDiscount = wrappers.selectByDiscount(discountToSelect);
-        List<WebElement> products = wrappers.getSearchResults();
-        List<String> discounts = new ArrayList<>() ;
 
-        for(WebElement element: products){
-           String discount = element.findElement(By.xpath("//div[@class='UkUFwK']//span[contains(text(),'% off')]")).getText();
-           if(discount.contains("% off")){
-            discounts.add(discount);
-            }
-        }
 
         // Print title and discount % of those products
         if (productsWithDiscount.size() != 0) {
             wrappers.printTitleAndDiscount(productsWithDiscount);
-        }else{
-            System.out.println("No products found with the given discount: "+ discountToSelect+"% off");
         }
+
 
         wrappers.logStatus("End TestCase", "testCase02");
 
@@ -143,7 +132,6 @@ public class TestCases {
     }
 
     wrappers.logStatus("End TestCase", "testCase03");
-    
 
     }
 
@@ -173,6 +161,7 @@ public class TestCases {
         this.wait= new WebDriverWait(driver, Duration.ofSeconds(20));
     }
 
+    
 
     // Tear-down
     @AfterTest

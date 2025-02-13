@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
@@ -48,13 +47,6 @@ public class Wrappers {
 
     }
 
-    // To print logs or Error/Exception
-    public static void logStatus(String description, String errorMessage, String locator) {
-        String timestamp = String.valueOf(java.time.LocalDateTime.now());
-        System.out.println(String.format("%s | %s | %s | %s", timestamp, description, errorMessage, locator));
-
-    }
-
     // Navigate to url
     public void navigateTo(String url) {
         driver.get(url);
@@ -71,33 +63,33 @@ public class Wrappers {
 
             element.sendKeys(productName, Keys.ENTER);
 
-            //Custom condition to wait until page title contains the product name 
-            wait.until( driver -> getPageTitle().toLowerCase().contains(productName.toLowerCase()) );
+            // Custom condition to wait until page title contains the product name
+            wait.until(driver -> getPageTitle().toLowerCase().contains(productName.toLowerCase()));
 
         } catch (Exception e) {
-            logStatus("Failed to enter text in element: ", "Error: " + e.getMessage(), "" + Locators.SEARCH_BOX);
+            logStatus("Failed to enter text in element: " + e.getMessage(), "" + Locators.SEARCH_BOX);
             e.printStackTrace();
         }
 
     }
 
-    
-
-    // To capture all the search results
+    /*
+     * To capture all the search results 
+     * There are 2 locators to getSearchResults because the website renders the search results
+     *  in two different ways this method will make sure to get the results.
+     */
     public List<WebElement> getSearchResults() {
         try {
 
             List<WebElement> searchResults = wait.until(
                     ExpectedConditions.visibilityOfAllElementsLocatedBy(Locators.SEARCH_RESULTS_ELE));
 
-            // driver.findElements((Locators.SEARCH_RESULTS_ELEMENT));
             return searchResults;
 
         } catch (TimeoutException e) {
             List<WebElement> searchResults = wait.until(
                     ExpectedConditions.visibilityOfAllElementsLocatedBy(Locators.SEARCH_RESULTS_ELEMENT));
             return searchResults;
-
         }
 
     }
@@ -114,48 +106,46 @@ public class Wrappers {
                     .visibilityOfElementLocated(Locators.waitToLoadSelectedCategory(categoryToSelect)));
 
         } catch (Exception e) {
-            logStatus("Failed to sort by " + categoryToSelect, "Error: " + e.getMessage(),
-                    "" + Locators.sortByCategory(categoryToSelect));
+            logStatus("Failed to sort by " + categoryToSelect, "Error: " + e.getMessage());
             e.printStackTrace();
-
         }
 
     }
 
-
-    //Selects top 5 produt with high reviews 
-    public List<WebElement> topFiveHighReviewProducts(){
+    // Selects top 5 product with high customer reviews
+    public List<WebElement> topFiveHighReviewProducts() {
         try {
             List<WebElement> searchResults = getSearchResults();
             List<Integer> reviewsInInteger = new ArrayList<>();
             List<WebElement> topFiveProducts = new ArrayList<>();
-    
-            for(WebElement searchResult: searchResults){
+
+            for (WebElement searchResult : searchResults) {
                 WebElement element = searchResult.findElement(Locators.REVIEW_ELEMENT);
                 String reviewText = element.getText();
-                Integer reviews = Integer.valueOf(reviewText.substring(1, reviewText.length()-1).trim().replace(",", ""));
+                Integer reviews = Integer
+                        .valueOf(reviewText.substring(1, reviewText.length() - 1).trim().replace(",", ""));
+
                 reviewsInInteger.add(reviews);
             }
-    
+
             Collections.sort(reviewsInInteger);
             int size = reviewsInInteger.size();
-    
-            for(int i =size-1; i>=size-5; i-- ){
-                WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(Locators.dyanamicReviewElemenet(reviewsInInteger.get(i))));
+
+            for (int i = size - 1; i >= size - 5; i--) {
+                WebElement element = wait.until(ExpectedConditions
+                        .visibilityOfElementLocated(Locators.dyanamicReviewElemenet(reviewsInInteger.get(i))));
+
                 topFiveProducts.add(element);
-                
             }
+
             return topFiveProducts;
+
         } catch (Exception e) {
-           System.out.println("Failed to get Top five reviewed Products: "+"Error: "+e.getMessage());
-           return new ArrayList<>();
+            System.out.println("Failed to get Top five reviewed Products: " + "Error: " + e.getMessage());
+            return new ArrayList<>();
         }
 
     }
-
-
-
-
 
     // Select product by ratings
     public List<WebElement> selectByRatings(String ratingsToSelect) {
@@ -172,16 +162,15 @@ public class Wrappers {
                 }
             }
 
-            // // If no product found for the given rating
-            // if (elementsByRating.size() == 0) {
-            //     System.out.println("No products found with the given rating: "+ ratingsToSelect);
-            // }
+            // If no product found for the given rating
+            if (elementsByRating.size() == 0) {
+                System.out.println("No products found with the given rating: " + ratingsToSelect);
+            }
 
             return elementsByRating;
 
         } catch (Exception e) {
-            logStatus("Failed to get search result by rating: ", "Error: " + e.getMessage(),
-                    "" + Locators.getProductEleByRating(ratingsToSelect));
+            logStatus("Failed to get product by rating: "+ratingsToSelect, "Error: " + e.getMessage());
             e.printStackTrace();
 
             return new ArrayList<WebElement>();
@@ -198,65 +187,66 @@ public class Wrappers {
             for (WebElement element : searchResults) {
                 List<WebElement> list = element.findElements(Locators.getProductEleByDiscount(discountToSelect));
 
+                //if list is has elements then add the whole element to list 'discountElements' 
                 if (!list.isEmpty()) {
                     discountElements.add(element);
                 }
             }
 
-            // // If no product found for the given discount
-            // if (discountElements.size() == 0) {
-            //     System.out.println("No products found with the given discount: "+ discountToSelect+"% off");
- 
-            // }
+            // If no product found for the given discount
+            if (discountElements.size() == 0) {
+                System.out.println("No products found with the given discount: " + discountToSelect + "% off");
+
+            }
 
             return discountElements;
 
         } catch (Exception e) {
-            logStatus("Failed to get search result by discount: ", "Error: " + e.getMessage(),
-                    "" + Locators.getProductEleByDiscount(discountToSelect));
+            logStatus("Failed to get search result by discount: "+discountToSelect, "Error: " + e.getMessage());
             e.printStackTrace();
+
             return new ArrayList<WebElement>();
         }
 
     }
 
+    //Prints the Title and Discount % of given List<WebElement> 
     public void printTitleAndDiscount(List<WebElement> elements) {
         try {
             for (WebElement ele : elements) {
                 logStatus("The Title is: " + getProductTitle(ele), " and its discount is: " + getProductDiscount(ele));
-
             }
 
         } catch (Exception e) {
-
-            logStatus("Failed to print Title and Discount", "Erro: " + e.getMessage());
+            logStatus("Failed to print Title and Discount", "Error: " + e.getMessage());
             e.printStackTrace();
         }
 
     }
 
-    public void printTitleAndImageUrl(List<WebElement> elements){
+    //Prints the Title and ImageUrl of given List<WebElement> 
+    public void printTitleAndImageUrl(List<WebElement> elements) {
 
         try {
-            for(WebElement ele:elements ){
+            for (WebElement ele : elements) {
                 logStatus("The Title is: " + getCupTitle(ele), " and its Img Url is: " + getImageUrl(ele));
-    
+
             }
-            
+
         } catch (Exception e) {
-            logStatus("Failed to print Title and ImageUrl ", "Erro: " + e.getMessage());
+            logStatus("Failed to print Title and ImageUrl ", "Error: " + e.getMessage());
             e.printStackTrace();
         }
-        
+
     }
 
-    //returns the current page title 
-    public String getPageTitle(){
+    // Gets the current page title
+    public String getPageTitle() {
         return driver.getTitle();
-    }
-    
 
-    // Click on a WebElement
+    }
+
+    // Clicks on a WebElement
     public void clickOnElement(By locator) {
         try {
             WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
@@ -269,63 +259,61 @@ public class Wrappers {
 
     }
 
-    //Returns the Title of the produc for cup
+    // Gets the Title of the product - for cup testCase03
     public String getCupTitle(WebElement element) {
         return element.findElement(Locators.TITLE_ELEMENT_CUP).getText();
 
     }
 
-    //Returns img url for the element - cup
-    public String getImageUrl(WebElement element){
-        return getAttributeValue(element.findElement(Locators.IMAGE_ELEMENT_CUP),"src" );
+    // Gets the img url for the element - for cup testCase03
+    public String getImageUrl(WebElement element) {
+        return getAttributeValue(element.findElement(Locators.IMAGE_ELEMENT_CUP), "src");
     }
 
-    // Returns the Title of the product
+    // Gets the Title of the product
     public String getProductTitle(WebElement element) {
         return element.findElement(Locators.TITLE_ELEMENT).getText();
 
     }
 
-    // Returns the Discount of the product
+    // Gets the Discount of the product
     public String getProductDiscount(WebElement element) {
         return element.findElement(Locators.DISCOUNT_ELEMENT).getText();
 
     }
 
-    // Returns the Rating of the product
+    // Gets the Rating of the product
     public String getProductRating(WebElement element) {
         return element.findElement(Locators.RATING_ELEMENT).getText();
 
     }
 
-    // To get text of WebElement
+    // Gets the text of WebElement
     public String getText(By locator) {
         try {
             WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
             return element.getText();
 
         } catch (Exception e) {
-            logStatus("Failed to get text from element: ", "Error: " + e.getMessage(), "" + locator);
+            logStatus("Failed to get text from element: "+locator, "Error: " + e.getMessage());
             e.printStackTrace();
-
             return null;
         }
 
     }
 
-    // To get the value of an attribute
+    // Gets the value of an attribute
     public String getAttributeValue(WebElement element, String attributeName) {
         try {
             return element.getAttribute(attributeName);
 
         } catch (Exception e) {
-            logStatus("Failed to get the value for the attribut " + attributeName, e.getMessage());
+            logStatus("Failed to get the value for the attribute " + attributeName, e.getMessage());
             e.printStackTrace();
             return null;
         }
 
     }
 
-   
-
+    
 }

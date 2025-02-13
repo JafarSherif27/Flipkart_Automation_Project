@@ -60,15 +60,17 @@ public class Locators {
 
     }
 
+    //Selects the category on the search page
     public static By sortByCategory(String categoryToSelect) {
         return By.xpath("//div[contains(@class,'zg-M3Z') and contains(text(), '" + categoryToSelect + "') ]");
     }
 
+    //Waits for the category to fully apply to the search results
     public static By waitToLoadSelectedCategory(String categoryToSelect) {
         return By.xpath("//div[contains(@class,'0H7xSG') and text()='" + categoryToSelect + "']");
 
     }
 
-    
+
 
 }
