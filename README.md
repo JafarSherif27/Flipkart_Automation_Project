@@ -20,9 +20,25 @@
 <br>
 
 ## testCase01
+
+## Steps:
 <br>
 
-## steps
+**Step 1:** Open the Chrome browser
+
+**Step 2:** Navigate to the url "https://www.flipkart.com/"
+
+**Step 3:** Search "Washing Machine" using the search bar
+
+**Step 4:** Sort the results by popularity 
+
+**Step 5:** Print the number of items with rating less than or equal to 4
+
+<br>
+
+## testCase01
+
+## Steps:
 <br>
 
 **Step 1:** Open the Chrome browser
@@ -36,11 +52,8 @@
 **Step 5:** Print the number of items with rating less than or equal to 4
 
 
-## testCase02
-<br>
 
-## steps
-<br>
+
 
 **Step 1:** Open the Chrome browser
 
