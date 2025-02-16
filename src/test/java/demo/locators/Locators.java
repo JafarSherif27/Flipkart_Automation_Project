@@ -18,7 +18,7 @@ public class Locators {
     public final static By SEARCH_RESULTS_ELEMENT = By.xpath("//div[@class='slAVV4']");
 
     // Selects all customer review elements of the product //for cups testCase03
-    public final static By REVIEW_ELEMENT = By.xpath(".//div//span[@class='Wphh3N']");
+    public final static By REVIEW_ELEMENT = By.xpath(".//div[contains(@class,'_5OesEi')]//span[@class='Wphh3N']");
 
     // Selects the dyanamic review element for the given review in Integer //for cups testCase03
     public static By dyanamicReviewElemenet(Integer intReview) {
@@ -45,7 +45,7 @@ public class Locators {
     public final static By SORT_BY_RATING = By.xpath("//div[@class='_6i1qKy' and contains(text(), 4)]");
 
     // wait until the page loads after sorting by rating
-    public final static By WAIT_SORT_BY_RATING = By.className("YcSYyC");
+    public final static By WAIT_SORT_BY_RATING = By.className("aOfogh");
 
     // Selects product element by ratings -to access this xpath need to use it with a searchResult's element
     public static By getProductEleByRating(String ratingToSelect) {

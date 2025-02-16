@@ -28,7 +28,7 @@ public class Wrappers {
     static WebDriver driver;
     public static WebDriverWait wait;
     Actions actions;
-    final int MAX_WAIT_TIME = 8;
+    final int MAX_WAIT_TIME = 15;
     public final static String HOMEPAGE_URL = "https://www.flipkart.com/";
 
     // Constructor
@@ -36,7 +36,6 @@ public class Wrappers {
         Wrappers.driver = driver;
         this.actions = new Actions(driver);
         Wrappers.wait = new WebDriverWait(driver, Duration.ofSeconds(MAX_WAIT_TIME));
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
     }
 
@@ -74,9 +73,10 @@ public class Wrappers {
     }
 
     /*
-     * To capture all the search results 
-     * There are 2 locators to getSearchResults because the website renders the search results
-     *  in two different ways this method will make sure to get the results.
+     * To capture all the search results
+     * There are 2 locators to getSearchResults because the website renders the
+     * search results
+     * in two different ways this method will make sure to get the results.
      */
     public List<WebElement> getSearchResults() {
         try {
@@ -119,13 +119,23 @@ public class Wrappers {
             List<Integer> reviewsInInteger = new ArrayList<>();
             List<WebElement> topFiveProducts = new ArrayList<>();
 
-            for (WebElement searchResult : searchResults) {
-                WebElement element = searchResult.findElement(Locators.REVIEW_ELEMENT);
-                String reviewText = element.getText();
-                Integer reviews = Integer
-                        .valueOf(reviewText.substring(1, reviewText.length() - 1).trim().replace(",", ""));
+            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(Locators.REVIEW_ELEMENT));
 
-                reviewsInInteger.add(reviews);
+            for (WebElement searchResult : searchResults) {
+                try {
+                    WebElement element = searchResult.findElement(Locators.REVIEW_ELEMENT);
+                    String reviewText = element.getText();
+                    Integer reviews = Integer
+                            .valueOf(reviewText.substring(1, reviewText.length() - 1).trim().replace(",", ""));
+                    reviewsInInteger.add(reviews);
+                    
+
+                } catch (Exception e) {
+                    e.getMessage();
+                    // A product may not have any review yet when that happens this block will be executed
+                    continue;
+                }    
+
             }
 
             Collections.sort(reviewsInInteger);
@@ -170,7 +180,7 @@ public class Wrappers {
             return elementsByRating;
 
         } catch (Exception e) {
-            logStatus("Failed to get product by rating: "+ratingsToSelect, "Error: " + e.getMessage());
+            logStatus("Failed to get product by rating: " + ratingsToSelect, "Error: " + e.getMessage());
             e.printStackTrace();
 
             return new ArrayList<WebElement>();
@@ -187,7 +197,7 @@ public class Wrappers {
             for (WebElement element : searchResults) {
                 List<WebElement> list = element.findElements(Locators.getProductEleByDiscount(discountToSelect));
 
-                //if list is has elements then add the whole element to list 'discountElements' 
+                // if list is has elements then add the whole element to list 'discountElements'
                 if (!list.isEmpty()) {
                     discountElements.add(element);
                 }
@@ -202,7 +212,7 @@ public class Wrappers {
             return discountElements;
 
         } catch (Exception e) {
-            logStatus("Failed to get search result by discount: "+discountToSelect, "Error: " + e.getMessage());
+            logStatus("Failed to get search result by discount: " + discountToSelect, "Error: " + e.getMessage());
             e.printStackTrace();
 
             return new ArrayList<WebElement>();
@@ -210,7 +220,7 @@ public class Wrappers {
 
     }
 
-    //Prints the Title and Discount % of given List<WebElement> 
+    // Prints the Title and Discount % of given List<WebElement>
     public void printTitleAndDiscount(List<WebElement> elements) {
         try {
             for (WebElement ele : elements) {
@@ -224,7 +234,7 @@ public class Wrappers {
 
     }
 
-    //Prints the Title and ImageUrl of given List<WebElement> 
+    // Prints the Title and ImageUrl of given List<WebElement>
     public void printTitleAndImageUrl(List<WebElement> elements) {
 
         try {
@@ -272,12 +282,14 @@ public class Wrappers {
 
     // Gets the Title of the product
     public String getProductTitle(WebElement element) {
+        wait.until(ExpectedConditions.visibilityOfAllElements(element.findElement(Locators.TITLE_ELEMENT)));
         return element.findElement(Locators.TITLE_ELEMENT).getText();
 
     }
 
     // Gets the Discount of the product
     public String getProductDiscount(WebElement element) {
+        wait.until(ExpectedConditions.visibilityOfAllElements(element.findElement(Locators.DISCOUNT_ELEMENT)));
         return element.findElement(Locators.DISCOUNT_ELEMENT).getText();
 
     }
@@ -295,7 +307,7 @@ public class Wrappers {
             return element.getText();
 
         } catch (Exception e) {
-            logStatus("Failed to get text from element: "+locator, "Error: " + e.getMessage());
+            logStatus("Failed to get text from element: " + locator, "Error: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
@@ -315,5 +327,4 @@ public class Wrappers {
 
     }
 
-    
 }

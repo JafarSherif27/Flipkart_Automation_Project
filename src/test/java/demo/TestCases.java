@@ -11,6 +11,7 @@ import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
@@ -41,8 +42,8 @@ public class TestCases {
      * Step 3: Sort the results by popularity
      * Step 4: Print the count of items with rating less than or equal to 4
      */
-    @Test
-    public void testCase01() throws InterruptedException {
+    @Test 
+    public void testCase01() {
         wrappers.logStatus("Start TestCase", "testCase01");
 
         // Navigate to Filpkart Homepage
@@ -161,7 +162,7 @@ public class TestCases {
         this.wait= new WebDriverWait(driver, Duration.ofSeconds(20));
     }
 
-    
+
 
     // Tear-down
     @AfterTest
