@@ -32,7 +32,7 @@
 
 **Step 4:** Sort the results by popularity 
 
-**Step 5:** Print the number of items with rating less than or equal to 4
+**Step 5:** Print the number of items with rating less than or equal to 4 stars
 
 <br>
 
